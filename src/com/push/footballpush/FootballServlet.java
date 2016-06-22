@@ -67,32 +67,15 @@ public class FootballServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		// Entity lastEntry = new Entity("LastEntry",117882041);
-		// lastEntry.setProperty("uid", 117882041);
-		// DatastoreService datastore =
-		// DatastoreServiceFactory.getDatastoreService();
-		// datastore.put(lastEntry);
-		// DatastoreService datastore = DatastoreServiceFactory
-		// .getDatastoreService();
-		// Query q = new Query("LastEntry");
-		// PreparedQuery pq = datastore.prepare(q);
-		// for (Entity result : pq.asIterable()) {
-		// Number uid = (Number) result.getProperty("uid");
-		// System.out.println(uid);
-		// }
 		int hour = new Date().getHours();
 		resp.getWriter()
 				.println(
 						"<!DOCTYPE html><html><head><meta name='txtweb-appkey' content='fa0d179a-9e40-4d3f-a0f6-cba551dfd3a8'> </head><body>");
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar cal = Calendar.getInstance();
-//		if (req.getParameter("results") != null)
 		String todayDate = dateFormat.format(cal.getTime());
 			cal.add(Calendar.DATE, -1);
 		String yestDate = dateFormat.format(cal.getTime());
-		// String url =
-		// "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=5694,572,573&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate="
-		// + yestDate + "&enddate=&FullCurrTime=true&uid=-1";
 		if (hour > 7)
 		{
 			yestDate ="";
@@ -139,7 +122,6 @@ public class FootballServlet extends HttpServlet {
 						break;
 					}
 				}
-			// resp.getWriter().println("<br>");
 			games = null;
 			league = null;
 			it.remove(); // avoids a ConcurrentModificationException
@@ -184,136 +166,9 @@ public class FootballServlet extends HttpServlet {
 		}
 	}
 
-	// private void getResults(String gameID, String type) {
-	// String message = "";
-	// // for (String[] game : games) {
-	// // message += game[3] + ":<br>" + game[1] + " " + game[4] + " - "
-	// // + game[5] + " " + game[2] + "<br>" + game[6];
-	// // if (gameID.equalsIgnoreCase("all"))
-	// // sendMessage(message);
-	// // else if (gameID.equalsIgnoreCase(game[0])) {
-	// // sendMessage(message + "<br>" + type);
-	// // break;
-	// // }
-	// //
-	// // message = "";
-	// // }
-	//
-	// }
-
-	// private void handlePush(JSONArray paramsArray, Number type, Number
-	// gameID) {
-	// log.info("inside handlePush");
-	// String[] teams = getGamefromID(gameID);
-	// String message = null;
-	// // Goal
-	// log.info("Value: " + type.intValue());
-	// log.info("ParamsArray: " + paramsArray);
-	// // log.info("JSON: "+((JSONObject) paramsArray.get(0)).get("Value"));
-	// // if (type.intValue() == 10) {
-	// // String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-	// // .get("Value");
-	// //
-	// // String time = (String) ((JSONObject) paramsArray.get(1))
-	// // .get("Value");
-	// // String player = (String) ((JSONObject) paramsArray.get(2))
-	// // .get("Value");
-	// // String homeScore = (String) ((JSONObject) paramsArray.get(3))
-	// // .get("Value");
-	// // String awayScore = (String) ((JSONObject) paramsArray.get(4))
-	// // .get("Value");
-	// // log.info(TeamNum + " " + time + " " + player + " " + homeScore
-	// // + " " + awayScore + teams);
-	// // message = "GOAL!<br>(" + time + "') " + player + " "
-	// // + teams[Integer.parseInt(TeamNum)] + "";
-	// // message += "<br><br>Score:<br>" + teams[1] + " " + homeScore
-	// // + " - " + awayScore + " " + teams[2];
-	// // // log.info(message);
-	// // }
-	// // Yellow card
-	// // if (type.intValue() == 11) {
-	// // String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-	// // .get("Value");
-	// // String time = (String) ((JSONObject) paramsArray.get(1))
-	// // .get("Value");
-	// // String player = (String) ((JSONObject) paramsArray.get(2))
-	// // .get("Value");
-	// // message = "YELLOW CARD<br>(" + time + "') " + player + " ("
-	// // + teams[Integer.parseInt(TeamNum)] + ")";
-	// //
-	// // }
-	// // red card
-	// if (type.intValue() == 12) {
-	// String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-	// .get("Value");
-	// String time = (String) ((JSONObject) paramsArray.get(1))
-	// .get("Value");
-	// String player = (String) ((JSONObject) paramsArray.get(2))
-	// .get("Value");
-	// // String homeScore = (String) ((JSONObject)
-	// // paramsArray.get(3)).get("Value");
-	// // String awayScore = (String) ((JSONObject)
-	// // paramsArray.get(4)).get("Value");
-	//
-	// // String[] teams = getGamefromID(gameID);
-	// message = "RED CARD<br>(" + time + "') " + player + " ("
-	// + teams[Integer.parseInt(TeamNum)] + ")";
-	// // log.info(message);
-	// }
-	// // Halftime
-	// if (type.intValue() == 9) {
-	// String state = (String) ((JSONObject) paramsArray.get(0))
-	// .get("Value");
-	// if (state.equalsIgnoreCase("Halftime")) {
-	// message = state + "<br>" + teams[1] + " " + teams[4] + " - "
-	// + teams[5] + " " + teams[2];
-	// getResults(String.valueOf(gameID.intValue()), "(Half Time)");
-	// message = null;
-	// }
-	// }
-	// if (type.intValue() == 32) {
-	//
-	// message = "MATCH STARTED" + "<br>" + teams[1] + " vs " + teams[2];
-	// // log.info(message);
-	// }
-	// if (type.intValue() == 33) {
-	//
-	// message = "MATCH FINISHED" + "<br>" + teams[1] + " " + teams[4]
-	// + " - " + teams[5] + " " + teams[2];
-	// getResults(String.valueOf(gameID.intValue()), "(Full Time)");
-	// message = null;
-	// // log.info(message);
-	// }
-	//
-	// log.info(message);
-	// if (message != null) {
-	// message += "<br>(" + teams[3] + ")";
-	// sendMessage(message);
-	// }
-	//
-	// }
-	//
-	// private void sendMessage(String message) {
-	// try {
-	// log.info("inside sendMessage");
-	// String url =
-	// "http://api.txtweb.com/groups?action=group_push&txtweb-group-id=twgroup-54c5e07ee4b0fb1d74c2d1ae&txtweb-message=<html><head><meta%20name=txtweb-appkey%20content='d1ce380e-f94d-4288-9d73-3efef6d58df7'>"
-	// + "<body>"
-	// + URLEncoder.encode(message, "UTF-8")
-	// + "</body></html>";
-	//
-	// log.info(readUrl(url));
-	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-
 	private static String getCompetitionfromID(Number compID) {
 		String compFound = null;
-		// log.info("inside getCompetitionfromID");
 		for (String comp[] : competitions) {
-			// log.info("Competition: " + comp[1]);
 			if (Integer.parseInt(comp[0]) == compID.intValue()) {
 				compFound = comp[1];
 				break;
@@ -448,12 +303,6 @@ public class FootballServlet extends HttpServlet {
 					gameInfo[teamNum++] = team;
 				}
 				gameInfo[3] = getCompetitionfromID(compID).toUpperCase();
-				// log.info(String.valueOf(Integer.parseInt(scores.get(0).toString())));
-				// gameInfo[4] =
-				// String.valueOf(Integer.parseInt(scores.get(0).toString()));
-				// gameInfo[5] =
-				// String.valueOf(Integer.parseInt(scores.get(1).toString()));
-				// log.info(scores.get(0).toString());
 				gameInfo[4] = String.valueOf(((Number) scores.get(0))
 						.intValue());
 				gameInfo[5] = String.valueOf(((Number) scores.get(1))
@@ -464,7 +313,6 @@ public class FootballServlet extends HttpServlet {
 					for (Object event : eventsArray) {
 						JSONObject eventsJson = (JSONObject) event;
 
-						// System.out.println(eventsJson);
 						Number type = (Number) eventsJson.get("Type");
 						// Goal
 						if (type.intValue() == 0) {
