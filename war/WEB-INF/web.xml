@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<servlet>
+		<servlet-name>Footballpush</servlet-name>
+		<servlet-class>com.push.footballpush.FootballpushServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Football</servlet-name>
+		<servlet-class>com.push.footballpush.FootballServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>FootballAutomate</servlet-name>
+		<servlet-class>com.push.footballpush.FootballAutomateServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>Shouts</servlet-name>
+		<servlet-class>com.push.footballpush.DbOperations</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Footballpush</servlet-name>
+		<url-pattern>/footballpush</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FootballAutomate</servlet-name>
+		<url-pattern>/auto</url-pattern>
+	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>Football</servlet-name>
+		<url-pattern>/football</url-pattern>-
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Shouts</servlet-name>
+		<url-pattern>/shouts</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+	<!-- <cron> <url>/footballpush</url> <description>Every day from 4:50pm 
+		- 9:00pm</description> <schedule>every 5 minutes from 13:30 to 22:30</schedule> 
+		</cron> -->
+	<cron>
+		<url>/footballpush?results=1</url>
+		<description>Every day at 9am</description>
+		<schedule>every day 3:35</schedule>
+	</cron>
+	<cron>
+		<url>/auto?check=1</url>
+		<description>Every 3 mins</description>
+		<schedule>every 3 minutes</schedule>
+	</cron>
+	<cron>
+		<url>/auto?checkforcace=1</url>
+		<description>Every 2 mins</description>
+		<schedule>every 2 minutes</schedule>
+	</cron>
+	<cron>
+		<url>/auto</url>
+		<description>every 6 hours</description>
+		<schedule>every 6 hours</schedule>
+	</cron>
+	<cron>
+		<url>/shouts?delete=6&amp;cricket=1</url>
+		<description>Every day at 12am for clearing db</description>
+		<schedule>every 6 hours synchronized</schedule>
+	</cron>
+	<cron>
+		<url>/shouts?delete=1&amp;football=1</url>
+		<description>Every day at 12am for clearing db</description>
+		<schedule>every day 12:00</schedule>
+	</cron>
+</cronentries>
