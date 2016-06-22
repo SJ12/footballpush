@@ -68,31 +68,15 @@ public class FootballpushServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-		// Entity lastEntry = new Entity("LastEntry",117882041);
-		// lastEntry.setProperty("uid", 117882041);
-		// DatastoreService datastore =
-		// DatastoreS	erviceFactory.getDatastoreService();
-		// datastore.put(lastEntry);
-		// DatastoreService datastore = DatastoreServiceFactory
-		// .getDatastoreService();
-		// Query q = new Query("LastE	ntry");
-		// PreparedQuery pq = datastore.prepare(q);
-		// for (Entity result : pq.asIterable()) {
-		// Number uid = (Number) result.getProperty("uid");
-		// System.out.println(uid);
-		// }
-//		log.info("in doGet");
+
 		sendMessage("testing message");
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
 			cal.add(Calendar.DATE, -1);
 		String yestDate = dateFormat.format(cal.getTime());
-//		String url = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=5694,572,573&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate="
-//				+ yestDate + "&enddate=&FullCurrTime=true&uid=-1";
 		
 		String url = String.format(gamesUri, yestDate,"","-1");
-		
 		// String url="http://sms.cricbuzz.com/chrome/alert.json";
 		resp.setContentType("text/html");
 		games = getGames(url);
@@ -102,7 +86,6 @@ public class FootballpushServlet extends HttpServlet {
 				resp.getWriter().println(
 						game[0] + " - " + game[1] + " " + game[4] + " - "
 								+ game[5] + " " + game[2] + "<br>");
-			// System.out.println(game);
 		}
 		if (req.getParameter("results") != null)
 			getResults("all","");
@@ -139,28 +122,17 @@ public class FootballpushServlet extends HttpServlet {
 		for (Entity result : pq.asIterable()) {
 			uid = (String) result.getProperty("uid");
 		}
-		// System.out.println(uid);
-		// log.info("uid:" + uid);
-		// Entity lastEntry = new Entity("LastEntry",res);
-		// lastEntry.setProperty("uid", 123123);
-		// datastore.put(lastEntry);
-//		String url = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=572,573,5694&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=&enddate=&FullCurrTime=true&uid="
-//				+ uid;
 		String url = String.format(gamesUri, "","",uid);
 		try {
 			String jsonString = readUrl(url);
-			// System.out.println(jsonString);
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(jsonString);
 
 			JSONObject jsonObject = (JSONObject) obj;
 			Number updateID = (Number) jsonObject.get("LastUpdateID");
-			// System.out.println(updateID.toString());
 			log.info("updateID:" + updateID);
 			Entity lastEntry = new Entity("LastEntry", 117882041);
 			lastEntry.setProperty("uid", updateID.toString());
-			// DatastoreService datastore =
-			// DatastoreServiceFactory.getDatastoreService();
 			datastore.put(lastEntry);
 			JSONArray notsArray = (JSONArray) jsonObject.get("Notifications");
 			log.info("Nots: " + notsArray + " " + notsArray.size());
@@ -187,39 +159,7 @@ public class FootballpushServlet extends HttpServlet {
 		// Goal
 		log.info("Value: " + type.intValue());
 		log.info("ParamsArray: " + paramsArray);
-		// log.info("JSON: "+((JSONObject) paramsArray.get(0)).get("Value"));
-//		if (type.intValue() == 10) {
-//			String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-//					.get("Value");
-//
-//			String time = (String) ((JSONObject) paramsArray.get(1))
-//					.get("Value");
-//			String player = (String) ((JSONObject) paramsArray.get(2))
-//					.get("Value");
-//			String homeScore = (String) ((JSONObject) paramsArray.get(3))
-//					.get("Value");
-//			String awayScore = (String) ((JSONObject) paramsArray.get(4))
-//					.get("Value");
-//			log.info(TeamNum + " " + time + " " + player + " " + homeScore
-//					+ " " + awayScore + teams);
-//			message = "GOAL!<br>(" + time + "') " + player + " "
-//					+ teams[Integer.parseInt(TeamNum)] + "";
-//			message += "<br><br>Score:<br>" + teams[1] + " " + homeScore
-//					+ " - " + awayScore + " " + teams[2];
-//			// log.info(message);
-//		}
-		// Yellow card
-		// if (type.intValue() == 11) {
-		// String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-		// .get("Value");
-		// String time = (String) ((JSONObject) paramsArray.get(1))
-		// .get("Value");
-		// String player = (String) ((JSONObject) paramsArray.get(2))
-		// .get("Value");
-		// message = "YELLOW CARD<br>(" + time + "') " + player + " ("
-		// + teams[Integer.parseInt(TeamNum)] + ")";
-		//
-		// }
+
 		// red card
 		if (type.intValue() == 12) {
 			String TeamNum = (String) ((JSONObject) paramsArray.get(0))
@@ -228,15 +168,9 @@ public class FootballpushServlet extends HttpServlet {
 					.get("Value");
 			String player = (String) ((JSONObject) paramsArray.get(2))
 					.get("Value");
-			// String homeScore = (String) ((JSONObject)
-			// paramsArray.get(3)).get("Value");
-			// String awayScore = (String) ((JSONObject)
-			// paramsArray.get(4)).get("Value");
 
-			// String[] teams = getGamefromID(gameID);
 			message = "RED CARD<br>(" + time + "') " + player + " ("
 					+ teams[Integer.parseInt(TeamNum)] + ")";
-			// log.info(message);
 		}
 		// Halftime
 		if (type.intValue() == 9) {
@@ -253,7 +187,6 @@ public class FootballpushServlet extends HttpServlet {
 		if (type.intValue() == 32) {
 
 			message = "MATCH STARTED" + "<br>" + teams[1] + " vs " + teams[2];
-			// log.info(message);
 		}
 		if (type.intValue() == 33) {
 
@@ -261,7 +194,6 @@ public class FootballpushServlet extends HttpServlet {
 					+ " - " + teams[5] + " " + teams[2];
 			getResults(String.valueOf(gameID.intValue()),"(Full Time)");
 			message=null;
-			// log.info(message);
 		}
 		log.info(message);
 		if (message != null) {
@@ -274,16 +206,10 @@ public class FootballpushServlet extends HttpServlet {
 	public void sendMessage(String message) {
 		try {
 			log.info("inside sendMessage........");
-			// String url = "http://api.txtweb.com/groups?action=group_push&txtweb-group-id=twgroup-54c5e07ee4b0fb1d74c2d1ae&txtweb-message=<html><head><meta%20name=txtweb-appkey%20content='d1ce380e-f94d-4288-9d73-3efef6d58df7'>"
-			// 		+ "<body>"
-			// 		+ URLEncoder.encode(message, "UTF-8")
-			// 		+ "</body></html>";
 
-			// log.info(readUrl(url));
 			//using twilio sms
 			new twilio_sms("+919620950489",message);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -392,7 +318,6 @@ public class FootballpushServlet extends HttpServlet {
 				gameInfo[0] = gameID.toString();
 				JSONArray compsArray = (JSONArray) gamesJson.get("Comps");
 				JSONArray scores = (JSONArray) gamesJson.get("Scrs");
-				// JSONArray events = (JSONArray) gamesJson.get("Events");
 				JSONArray eventsArray = (JSONArray) gamesJson.get("Events");
 				int teamNum = 1;
 				for (Object comp : compsArray) {
@@ -401,12 +326,7 @@ public class FootballpushServlet extends HttpServlet {
 					gameInfo[teamNum++] = team;
 				}
 				gameInfo[3] = getCompetitionfromID(compID).toUpperCase();
-				// log.info(String.valueOf(Integer.parseInt(scores.get(0).toString())));
-				// gameInfo[4] =
-				// String.valueOf(Integer.parseInt(scores.get(0).toString()));
-				// gameInfo[5] =
-				// String.valueOf(Integer.parseInt(scores.get(1).toString()));
-				// log.info(scores.get(0).toString());
+
 				gameInfo[4] = String.valueOf(((Number) scores.get(0))
 						.intValue());
 				gameInfo[5] = String.valueOf(((Number) scores.get(1))
