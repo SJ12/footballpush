@@ -103,19 +103,15 @@ public class FootballServlet extends HttpServlet {
 		resp.setContentType("text/html");
 		games = getGames(url);
 
-		// for (String[] game : games) {
-		//
-		// if (game != null)
-		// resp.getWriter().println(
-		// game[7] + " - " + game[1] + " " + game[4] + " - "
-		// + game[5] + " " + game[2] + " " + game[3]
-		// + "<br>");
-		// // System.out.println(game);
-		// }
-		if (req.getParameter("id") == null)
-			getAllGames(resp);
+		if(games==null)
+			resp.getWriter().println("No active matches..");
 		else
-			getDetails(resp, req.getParameter("id"));
+		{
+			if (req.getParameter("id") == null)
+				getAllGames(resp);
+			else
+				getDetails(resp, req.getParameter("id"));
+		}
 	}
 
 	private void getDetails(HttpServletResponse resp, String matchId)
@@ -329,7 +325,7 @@ public class FootballServlet extends HttpServlet {
 
 	private static String readUrl(String urlString) {
 		BufferedReader reader = null;
-		log.info(urlString);
+		log.info("Url: "+urlString);
 		StringBuffer buffer = new StringBuffer();
 		try {
 			URL url = new URL(urlString);
@@ -340,6 +336,7 @@ public class FootballServlet extends HttpServlet {
 			while ((read = reader.read(chars)) != -1)
 				buffer.append(chars, 0, read);
 			// log.info(buffer.toString());
+			System.out.println(buffer.toString());
 			return buffer.toString();
 		} catch (Exception e) {
 			log.info("Ex: " + e);
@@ -375,12 +372,16 @@ public class FootballServlet extends HttpServlet {
 		Map<String, ArrayList<String[]>> map = new HashMap<String, ArrayList<String[]>>();
 		try {
 			String jsonString = readUrl(url);
+			if(jsonString == null)
+				return null;
 			Object obj = parser.parse(jsonString);
 
 			JSONObject jsonObject = (JSONObject) obj;
 
 			jsonObject.get("LastUpdateID");
 			JSONArray gamesArray = (JSONArray) jsonObject.get("Games");
+			if(gamesArray == null)
+				return null;
 			activeGames = new String[gamesArray.size()][];
 			int gameNum = 0, compNum = 0;
 			// String[] gameInfo = new String[3];

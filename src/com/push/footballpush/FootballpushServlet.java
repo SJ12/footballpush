@@ -81,8 +81,8 @@ public class FootballpushServlet extends HttpServlet {
 		// Number uid = (Number) result.getProperty("uid");
 		// System.out.println(uid);
 		// }
-		log.info("in doGet");
-		sendMessage("test message");
+//		log.info("in doGet");
+		sendMessage("testing message");
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
@@ -273,7 +273,7 @@ public class FootballpushServlet extends HttpServlet {
 
 	public void sendMessage(String message) {
 		try {
-			log.info("inside sendMessage");
+			log.info("inside sendMessage........");
 			// String url = "http://api.txtweb.com/groups?action=group_push&txtweb-group-id=twgroup-54c5e07ee4b0fb1d74c2d1ae&txtweb-message=<html><head><meta%20name=txtweb-appkey%20content='d1ce380e-f94d-4288-9d73-3efef6d58df7'>"
 			// 		+ "<body>"
 			// 		+ URLEncoder.encode(message, "UTF-8")
@@ -317,7 +317,7 @@ public class FootballpushServlet extends HttpServlet {
 
 	private static String readUrl(String urlString) {
 		BufferedReader reader = null;
-		log.info("he: "+urlString);
+		log.info("Url: "+urlString);
 		StringBuffer buffer = new StringBuffer();
 		try {
 			URL url = new URL(urlString);
