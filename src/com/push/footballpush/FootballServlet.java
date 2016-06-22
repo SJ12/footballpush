@@ -87,7 +87,7 @@ public class FootballServlet extends HttpServlet {
 		games = getGames(url);
 
 		if(games==null)
-			resp.getWriter().println("No active matches..");
+			resp.getWriter().println("No active matches!");
 		else
 		{
 			if (req.getParameter("id") == null)

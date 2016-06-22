@@ -70,6 +70,7 @@ public class FootballpushServlet extends HttpServlet {
 			throws IOException {
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		;;
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
 			cal.add(Calendar.DATE, -1);

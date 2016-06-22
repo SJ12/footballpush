@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DbOperations
 extends HttpServlet {
-    String appkey = null;
+    String appkey = null; 
     String sub_link_add = null;
     String db_name = null;
-    String comments_name = null;
+    String comments_name = null; 
     private static final Logger log = Logger.getLogger(DbOperations.class.getName());
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
