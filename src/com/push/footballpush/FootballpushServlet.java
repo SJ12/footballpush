@@ -69,7 +69,6 @@ public class FootballpushServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 
-		sendMessage("testing message");
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
@@ -149,7 +148,6 @@ public class FootballpushServlet extends HttpServlet {
 		} catch (Exception e) {
 
 		}
-
 	}
 
 	private void handlePush(JSONArray paramsArray, Number type, Number gameID) {
