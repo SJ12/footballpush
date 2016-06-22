@@ -38,7 +38,7 @@ public class FootballpushServlet extends HttpServlet {
 	private static String[][] competitions;
 	private static final Logger log = Logger
 			.getLogger(FootballpushServlet.class.getName());
-	public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=5694,572,573,570,6071&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
+	public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=6316,5694,572,573,570,6071&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
 
 	// Manu - 105
 	// chelsea - 106
@@ -70,7 +70,6 @@ public class FootballpushServlet extends HttpServlet {
 			throws IOException {
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		;;
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
 			cal.add(Calendar.DATE, -1);
