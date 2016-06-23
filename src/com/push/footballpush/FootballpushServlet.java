@@ -38,7 +38,7 @@ public class FootballpushServlet extends HttpServlet {
 	private static String[][] competitions;
 	private static final Logger log = Logger
 			.getLogger(FootballpushServlet.class.getName());
-	public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=6316,5694,572,573,570,6071&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
+	public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=595,6316,5694,572,573,570,6071&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
 
 	// Manu - 105
 	// chelsea - 106
@@ -84,7 +84,7 @@ public class FootballpushServlet extends HttpServlet {
 			if (game != null)
 				resp.getWriter().println(
 						game[0] + " - " + game[1] + " " + game[4] + " - "
-								+ game[5] + " " + game[2] + "<br>");
+								+ game[5] + " " + game[2] + "\n");
 		}
 		if (req.getParameter("results") != null)
 			getResults("all","");
@@ -95,14 +95,14 @@ public class FootballpushServlet extends HttpServlet {
 	private void getResults(String gameID,String type) {
 		String message = "";
 		for (String[] game : games) {
-			message += game[3] + ":<br>" + game[1] + " " + game[4] + " - "
-					+ game[5] + " " + game[2] + "<br>" + game[6];
+			message += game[3] + ":\n" + game[1] + " " + game[4] + " - "
+					+ game[5] + " " + game[2] + "\n" + game[6];
 			if(gameID.equalsIgnoreCase("all"))
 				sendMessage(message);
 			else
 				if(gameID.equalsIgnoreCase(game[0]))
 				{
-					sendMessage(message+"<br>"+type);
+					sendMessage(message+"\n"+type);
 					break;
 				}
 					
@@ -167,7 +167,7 @@ public class FootballpushServlet extends HttpServlet {
 			String player = (String) ((JSONObject) paramsArray.get(2))
 					.get("Value");
 
-			message = "RED CARD<br>(" + time + "') " + player + " ("
+			message = "RED CARD\n(" + time + "') " + player + " ("
 					+ teams[Integer.parseInt(TeamNum)] + ")";
 		}
 		// Halftime
@@ -176,7 +176,7 @@ public class FootballpushServlet extends HttpServlet {
 					.get("Value");
 			if (state.equalsIgnoreCase("Halftime"))
 			{
-				message = state + "<br>" + teams[1] + " " + teams[4] + " - "
+				message = state + "\n" + teams[1] + " " + teams[4] + " - "
 						+ teams[5] + " " + teams[2];
 				getResults(String.valueOf(gameID.intValue()),"(Half Time)");
 				message=null;
@@ -184,18 +184,18 @@ public class FootballpushServlet extends HttpServlet {
 		}
 		if (type.intValue() == 32) {
 
-			message = "MATCH STARTED" + "<br>" + teams[1] + " vs " + teams[2];
+			message = "MATCH STARTED" + "\n" + teams[1] + " vs " + teams[2];
 		}
 		if (type.intValue() == 33) {
 
-			message = "MATCH FINISHED" + "<br>" + teams[1] + " " + teams[4]
+			message = "MATCH FINISHED" + "\n" + teams[1] + " " + teams[4]
 					+ " - " + teams[5] + " " + teams[2];
 			getResults(String.valueOf(gameID.intValue()),"(Full Time)");
 			message=null;
 		}
 		log.info(message);
 		if (message != null) {
-			message += "<br>(" + teams[3] + ")";
+			message += "\n(" + teams[3] + ")";
 			sendMessage(message);
 		}
 
@@ -347,7 +347,7 @@ public class FootballpushServlet extends HttpServlet {
 							team = gameInfo[comp.intValue()];
 
 							goals += "" + time + "' - " + player + " (" + team
-									+ ")<br>";
+									+ ")\n";
 						}
 						if (type.intValue() == 2) {
 							String player = (String) eventsJson.get("Player");
@@ -359,7 +359,7 @@ public class FootballpushServlet extends HttpServlet {
 							team = gameInfo[comp.intValue()];
 
 							goals += "" + time + "' - " + player
-									+ " (RED CARD - " + team + ")<br>";
+									+ " (RED CARD - " + team + ")\n";
 						}
 					}
 				// System.out.println(goals);
