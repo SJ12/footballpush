@@ -13,8 +13,8 @@ import java.util.List;
 public class twilio_sms{
 
   // Find your Account Sid and Token at twilio.com/console
-  public static final String ACCOUNT_SID = "AC4ec60036a7dce19b008bb82e5c2925f3";
-  public static final String AUTH_TOKEN = "64a8aea84bb7c91da584d365960a45dd";
+  public static final String ACCOUNT_SID = "AC16d2c5b8d144b05c81b929bb0293a67b";
+  public static final String AUTH_TOKEN = "a97a64114306309a4595dfe171a27c8d";
   public String to="";
   public String message1="";
 
@@ -32,7 +32,7 @@ public class twilio_sms{
     List<NameValuePair> params = new ArrayList<NameValuePair>();
     params.add(new BasicNameValuePair("Body", message1));
     params.add(new BasicNameValuePair("To", to));
-    params.add(new BasicNameValuePair("From", "+1 256-344-8754"));
+    params.add(new BasicNameValuePair("From", "+12566266050"));
 
     MessageFactory messageFactory = client.getAccount().getMessageFactory();
     Message message = messageFactory.create(params);
