@@ -31,13 +31,11 @@ import com.google.appengine.api.datastore.Query;
 
 import com.push.footballpush.twilio_sms;
 
-
 @SuppressWarnings("serial")
 public class FootballpushServlet extends HttpServlet {
 	private static String[][] games;
 	private static String[][] competitions;
-	private static final Logger log = Logger
-			.getLogger(FootballpushServlet.class.getName());
+	private static final Logger log = Logger.getLogger(FootballpushServlet.class.getName());
 	public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=595,6316,5694,572,573,570,6071&competitors=5491,105,106,108,104,110,131,132,134,331,341,224,227,226&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
 
 	// Manu - 105
@@ -56,7 +54,7 @@ public class FootballpushServlet extends HttpServlet {
 	// inter - 224
 	// Ac milan - 227
 	// juve - 226
-	
+
 	// india - 5491
 
 	// Bundes - 25
@@ -66,46 +64,41 @@ public class FootballpushServlet extends HttpServlet {
 	// ucl - 572
 	// uel - 573
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Calendar cal = Calendar.getInstance();
 		if (req.getParameter("results") != null)
 			cal.add(Calendar.DATE, -1);
 		String yestDate = dateFormat.format(cal.getTime());
-		
-		String url = String.format(gamesUri, yestDate,"","-1");
+
+		String url = String.format(gamesUri, yestDate, "", "-1");
 		// String url="http://sms.cricbuzz.com/chrome/alert.json";
 		resp.setContentType("text/html");
 		games = getGames(url);
 
 		for (String[] game : games) {
 			if (game != null)
-				resp.getWriter().println(
-						game[0] + " - " + game[1] + " " + game[4] + " - "
-								+ game[5] + " " + game[2] + "\n");
+				resp.getWriter()
+						.println(game[0] + " - " + game[1] + " " + game[4] + " - " + game[5] + " " + game[2] + "\n");
 		}
 		if (req.getParameter("results") != null)
-			getResults("all","");
+			getResults("all", "");
 		else
 			getNotifications();
 	}
 
-	private void getResults(String gameID,String type) {
+	private void getResults(String gameID, String type) {
 		String message = "";
 		for (String[] game : games) {
-			message += game[3] + ":\n" + game[1] + " " + game[4] + " - "
-					+ game[5] + " " + game[2] + "\n" + game[6];
-			if(gameID.equalsIgnoreCase("all"))
+			message += game[3] + ":\n" + game[1] + " " + game[4] + " - " + game[5] + " " + game[2] + "\n" + game[6];
+			if (gameID.equalsIgnoreCase("all"))
 				sendMessage(message);
-			else
-				if(gameID.equalsIgnoreCase(game[0]))
-				{
-					sendMessage(message+"\n"+type);
-					break;
-				}
-					
+			else if (gameID.equalsIgnoreCase(game[0])) {
+				sendMessage(message + "\n" + type);
+				break;
+			}
+
 			message = "";
 		}
 
@@ -114,14 +107,13 @@ public class FootballpushServlet extends HttpServlet {
 	private void getNotifications() {
 		log.info("inside getNotifications");
 		String uid = null;
-		DatastoreService datastore = DatastoreServiceFactory
-				.getDatastoreService();
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("LastEntry");
 		PreparedQuery pq = datastore.prepare(q);
 		for (Entity result : pq.asIterable()) {
 			uid = (String) result.getProperty("uid");
 		}
-		String url = String.format(gamesUri, "","",uid);
+		String url = String.format(gamesUri, "", "", uid);
 		try {
 			String jsonString = readUrl(url);
 			JSONParser parser = new JSONParser();
@@ -160,26 +152,19 @@ public class FootballpushServlet extends HttpServlet {
 
 		// red card
 		if (type.intValue() == 12) {
-			String TeamNum = (String) ((JSONObject) paramsArray.get(0))
-					.get("Value");
-			String time = (String) ((JSONObject) paramsArray.get(1))
-					.get("Value");
-			String player = (String) ((JSONObject) paramsArray.get(2))
-					.get("Value");
+			String TeamNum = (String) ((JSONObject) paramsArray.get(0)).get("Value");
+			String time = (String) ((JSONObject) paramsArray.get(1)).get("Value");
+			String player = (String) ((JSONObject) paramsArray.get(2)).get("Value");
 
-			message = "RED CARD\n(" + time + "') " + player + " ("
-					+ teams[Integer.parseInt(TeamNum)] + ")";
+			message = "RED CARD\n(" + time + "') " + player + " (" + teams[Integer.parseInt(TeamNum)] + ")";
 		}
 		// Halftime
 		if (type.intValue() == 9) {
-			String state = (String) ((JSONObject) paramsArray.get(0))
-					.get("Value");
-			if (state.equalsIgnoreCase("Halftime"))
-			{
-				message = state + "\n" + teams[1] + " " + teams[4] + " - "
-						+ teams[5] + " " + teams[2];
-				getResults(String.valueOf(gameID.intValue()),"(Half Time)");
-				message=null;
+			String state = (String) ((JSONObject) paramsArray.get(0)).get("Value");
+			if (state.equalsIgnoreCase("Halftime")) {
+				message = state + "\n" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2];
+				getResults(String.valueOf(gameID.intValue()), "(Half Time)");
+				message = null;
 			}
 		}
 		if (type.intValue() == 32) {
@@ -188,11 +173,35 @@ public class FootballpushServlet extends HttpServlet {
 		}
 		if (type.intValue() == 33) {
 
-			message = "MATCH FINISHED" + "\n" + teams[1] + " " + teams[4]
-					+ " - " + teams[5] + " " + teams[2];
-			getResults(String.valueOf(gameID.intValue()),"(Full Time)");
-			message=null;
+			message = "MATCH FINISHED" + "\n" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2];
+			getResults(String.valueOf(gameID.intValue()), "(Full Time)");
+			message = null;
 		}
+
+		if (type.intValue() == 10) {
+			String TeamNum = (String) ((JSONObject) paramsArray.get(0)).get("Value");
+
+			String time = (String) ((JSONObject) paramsArray.get(1)).get("Value");
+			String player = (String) ((JSONObject) paramsArray.get(2)).get("Value");
+			String homeScore = (String) ((JSONObject) paramsArray.get(3)).get("Value");
+			String awayScore = (String) ((JSONObject) paramsArray.get(4)).get("Value");
+			log.info(TeamNum + " " + time + " " + player + " " + homeScore + " " + awayScore + teams);
+			message = "GOAL!\n(" + time + "') " + player + " " + teams[Integer.parseInt(TeamNum)] + "";
+			message += "\n\nScore:\n" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2];
+			// log.info(message);
+		}
+		// Yellow card
+		// if (type.intValue() == 11) {
+		// String TeamNum = (String) ((JSONObject) paramsArray.get(0))
+		// .get("Value");
+		// String time = (String) ((JSONObject) paramsArray.get(1))
+		// .get("Value");
+		// String player = (String) ((JSONObject) paramsArray.get(2))
+		// .get("Value");
+		// message = "YELLOW CARD<br>(" + time + "') " + player + " ("
+		// + teams[Integer.parseInt(TeamNum)] + ")";
+		//
+		// }
 		log.info(message);
 		if (message != null) {
 			message += "\n(" + teams[3] + ")";
@@ -205,8 +214,8 @@ public class FootballpushServlet extends HttpServlet {
 		try {
 			log.info("inside sendMessage........");
 
-			//using twilio sms
-			new twilio_sms("+919620950489",message);
+			// using twilio sms
+			new twilio_sms("+919620950489", message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -227,9 +236,9 @@ public class FootballpushServlet extends HttpServlet {
 
 	private static String getCompetitionfromID(Number compID) {
 		String compFound = null;
-		 log.info("inside getCompetitionfromID");
+		log.info("inside getCompetitionfromID");
 		for (String comp[] : competitions) {
-			 log.info("Competition: " + comp[1]);
+			log.info("Competition: " + comp[1]);
 			if (Integer.parseInt(comp[0]) == compID.intValue()) {
 				compFound = comp[1];
 				break;
@@ -241,7 +250,7 @@ public class FootballpushServlet extends HttpServlet {
 
 	private static String readUrl(String urlString) {
 		BufferedReader reader = null;
-		log.info("Url: "+urlString);
+		log.info("Url: " + urlString);
 		StringBuffer buffer = new StringBuffer();
 		try {
 			URL url = new URL(urlString);
@@ -280,8 +289,7 @@ public class FootballpushServlet extends HttpServlet {
 	 * "EntID": 672454 }
 	 */
 
-	public static String[][] getGames(String url) throws FileNotFoundException,
-			IOException {
+	public static String[][] getGames(String url) throws FileNotFoundException, IOException {
 		JSONParser parser = new JSONParser();
 		String[][] activeGames = null;
 		try {
@@ -295,8 +303,7 @@ public class FootballpushServlet extends HttpServlet {
 			activeGames = new String[gamesArray.size()][];
 			int gameNum = 0, compNum = 0;
 			// String[] gameInfo = new String[3];
-			JSONArray competitionsArray = (JSONArray) jsonObject
-					.get("Competitions");
+			JSONArray competitionsArray = (JSONArray) jsonObject.get("Competitions");
 			competitions = new String[competitionsArray.size()][];
 			for (Object comp : competitionsArray) {
 				String[] compInfo = new String[2];
@@ -325,10 +332,8 @@ public class FootballpushServlet extends HttpServlet {
 				}
 				gameInfo[3] = getCompetitionfromID(compID).toUpperCase();
 
-				gameInfo[4] = String.valueOf(((Number) scores.get(0))
-						.intValue());
-				gameInfo[5] = String.valueOf(((Number) scores.get(1))
-						.intValue());
+				gameInfo[4] = String.valueOf(((Number) scores.get(0)).intValue());
+				gameInfo[5] = String.valueOf(((Number) scores.get(1)).intValue());
 
 				String goals = "";
 				if (eventsArray != null)
@@ -340,26 +345,22 @@ public class FootballpushServlet extends HttpServlet {
 						// Goal
 						if (type.intValue() == 0) {
 							String player = (String) eventsJson.get("Player");
-							String time = String.valueOf(((Number) eventsJson
-									.get("GT")).intValue());
+							String time = String.valueOf(((Number) eventsJson.get("GT")).intValue());
 							Number comp = (Number) eventsJson.get("Comp");
 							String team = "";
 							team = gameInfo[comp.intValue()];
 
-							goals += "" + time + "' - " + player + " (" + team
-									+ ")\n";
+							goals += "" + time + "' - " + player + " (" + team + ")\n";
 						}
 						if (type.intValue() == 2) {
 							String player = (String) eventsJson.get("Player");
-							String time = String.valueOf(((Number) eventsJson
-									.get("GT")).intValue());
+							String time = String.valueOf(((Number) eventsJson.get("GT")).intValue());
 							Number comp = (Number) eventsJson.get("Comp");
 
 							String team = "";
 							team = gameInfo[comp.intValue()];
 
-							goals += "" + time + "' - " + player
-									+ " (RED CARD - " + team + ")\n";
+							goals += "" + time + "' - " + player + " (RED CARD - " + team + ")\n";
 						}
 					}
 				// System.out.println(goals);
