@@ -54,6 +54,7 @@ extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html; charset=UTF-8");
+        this.sendMessage("This is a test message sent!");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Calendar cal = Calendar.getInstance();
         if (req.getParameter("results") != null) {
