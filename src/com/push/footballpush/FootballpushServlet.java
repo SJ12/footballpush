@@ -78,16 +78,16 @@ extends HttpServlet {
             int n2 = 0;
             while (n2 < n) {
                 String[] game = arrstring[n2];
-                message = String.valueOf(message) + game[3] + ":<br>" + game[1] + " " + game[4] + " - " + game[5] + " " + game[2] + "<br>" + game[6];
+                message = String.valueOf(message) + game[3] + ":\n" + game[1] + " " + game[4] + " - " + game[5] + " " + game[2] + "\n" + game[6];
                 if (gameID.equalsIgnoreCase("all")) {
                     this.sendMessage(message);
                 } else if (gameID.equalsIgnoreCase(game[0])) {
                     String smsMessage = message;
                     if (game[11].equalsIgnoreCase("1")) {
-                        smsMessage = String.valueOf(smsMessage) + "<br><br>" + game[8];
+                        smsMessage = String.valueOf(smsMessage) + "\n\n" + game[8];
                     }
-                    this.sendMessage(String.valueOf(type) + "<br><br>" + smsMessage);
-                    this.postComment(String.valueOf(type) + "<br><br>" + message);
+                    this.sendMessage(String.valueOf(type) + "\n\n" + smsMessage);
+                    this.postComment(String.valueOf(type) + "\n\n" + message);
                     break;
                 }
                 message = "";
@@ -150,8 +150,8 @@ extends HttpServlet {
             String homeScore = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value");
             String awayScore = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
             log.info(String.valueOf(homeScore) + " " + awayScore + teams);
-            message = "GOAL DISALLOWED!<br>";
-            message = String.valueOf(message) + "The Goal has been ruled out.<br><br>Updated Score:<br>" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2] + "<br><br>";
+            message = "GOAL DISALLOWED!\n";
+            message = String.valueOf(message) + "The Goal has been ruled out.\n\nUpdated Score:\n" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2] + "\n\n";
         }
         if (type.intValue() == 10) {
             sms = matchbwFavTeams;
@@ -162,14 +162,14 @@ extends HttpServlet {
             String awayScore = (String)((JSONObject)paramsArray.get(4)).get((Object)"Value");
             log.info(String.valueOf(TeamNum) + " " + time + " " + player + " " + homeScore + " " + awayScore + teams);
             message = this.getGoalMessage(teams, TeamNum, time, player, homeScore, awayScore);
-            message = String.valueOf(message) + "<br><br>Score:<br>" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2] + "<br><br>";
+            message = String.valueOf(message) + "\n\nScore:\n" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2] + "\n\n";
         }
         if (type.intValue() == 11) {
             TeamNum = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value");
             time = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
             player = (String)((JSONObject)paramsArray.get(2)).get((Object)"Value");
             message = this.getYellowCardMessage(teams[Integer.parseInt(TeamNum)], time, player);
-            message = String.valueOf(message) + "<br><br>Score:<br>" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2] + "<br><br>";
+            message = String.valueOf(message) + "\n\nScore:\n" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2] + "\n\n";
         }
         if (type.intValue() == 12) {
             sms = 1;
@@ -177,7 +177,7 @@ extends HttpServlet {
             time = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
             player = (String)((JSONObject)paramsArray.get(2)).get((Object)"Value");
             message = this.getRedCardMessage(teams[Integer.parseInt(TeamNum)], time, player);
-            message = String.valueOf(message) + "<br><br>Score:<br>" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2] + "<br><br>";
+            message = String.valueOf(message) + "\n\nScore:\n" + teams[1] + " " + teams[4] + " - " + teams[5] + " " + teams[2] + "\n\n";
         }
         if (type.intValue() == 9 && (state = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value")).equalsIgnoreCase("Halftime")) {
             message = this.getHalfTimeMessage(teams);
@@ -204,23 +204,23 @@ extends HttpServlet {
     }
 
     private String getRedCardMessage(String team, String time, String player) {
-        String message = "RED CARD<br>";
+        String message = "RED CARD\n";
         message = String.valueOf(message) + player + " is SENT OFF in " + this.getTimeEndString(time) + " and " + team + " are a man down!";
         return message;
     }
 
     public String getKickOffMessage(String[] teams) {
         String message = "KICK OFF";
-        message = String.valueOf(message) + "<br>We're underway between " + teams[1] + " and " + teams[2];
+        message = String.valueOf(message) + "\nWe're underway between " + teams[1] + " and " + teams[2];
         if (teams[10] != null) {
             message = String.valueOf(message) + " at " + teams[10];
         }
-        message = String.valueOf(message) + "!<br><br>" + teams[9];
+        message = String.valueOf(message) + "!\n\n" + teams[9];
         return message;
     }
 
     private String getHalfTimeMessage(String[] teams) {
-        String message = "HALF TIME<br>";
+        String message = "HALF TIME\n";
         int diff = Integer.parseInt(teams[4]) - Integer.parseInt(teams[5]);
         // if (diff == 0) {
         //     message = String.valueOf(message) + "Nothing to seperate the teams at the end of first half.";
@@ -266,7 +266,7 @@ extends HttpServlet {
         AwayWinBySingleGoal.put(0, "Thats it! " + teams[2] + " hold on for a great away win vs " + teams[1]);
         AwayWinBySingleGoal.put(1, String.valueOf(teams[2]) + " fought hard and earns a superb away win vs " + teams[1]);
         AwayWinBySingleGoal.put(2, "A well-deserved away win for " + teams[2]);
-        String message = "FULL TIME<br>";
+        String message = "FULL TIME\n";
         // int diff = Integer.parseInt(teams[4]) - Integer.parseInt(teams[5]);
         // if (diff == 0) {
         //     message = String.valueOf(message) + (String)Draw.get(rn.nextInt(Draw.size()));
@@ -298,7 +298,7 @@ extends HttpServlet {
         String team = teams[Integer.parseInt(TeamNum)];
         int homescore = Integer.parseInt(homeScore);
         int awayscore = Integer.parseInt(awayScore);
-        String message = "GOAL!<br>";
+        String message = "GOAL!\n";
         int diff = 0;
         diff = TeamNum.equalsIgnoreCase("1") ? homescore - awayscore : awayscore - homescore;
         if (diff == 0) {
@@ -559,7 +559,7 @@ extends HttpServlet {
                             if (subType == 2) {
                                 goalMode = "(PEN)";
                             }
-                            goals = String.valueOf(goals) + time + "' - " + player + goalMode + " (" + (String)team + ")<br>";
+                            goals = String.valueOf(goals) + time + "' - " + player + goalMode + " (" + (String)team + ")\n";
                         }
                         if (type.intValue() != 2) continue;
                         player = (String)eventsJson.get((Object)"Player");
@@ -567,7 +567,7 @@ extends HttpServlet {
                         comp3 = (Number)eventsJson.get((Object)"Comp");
                         team = "";
                         team = gameInfo[comp3.intValue()];
-                        goals = String.valueOf(goals) + time + "' - " + player + " (RED CARD - " + (String)team + ")<br>";
+                        goals = String.valueOf(goals) + time + "' - " + player + " (RED CARD - " + (String)team + ")\n";
                     }
                 }
                 gameInfo[6] = goals;
@@ -672,7 +672,7 @@ extends HttpServlet {
                 gameInfo[6] = totalEvents;
                 gameInfo[7] = status;
                 String scorerow = null;
-                scorerow = gameInfo[4].equalsIgnoreCase("-1") ? String.valueOf(gameInfo[1]) + " vs " + gameInfo[2] + "<br>" + gameInfo[7] + "<br>" : String.valueOf(gameInfo[7]) + " - " + gameInfo[1] + " " + gameInfo[4] + " - " + gameInfo[5] + " " + gameInfo[2] + "<br>" + gameInfo[6] + "<br>";
+                scorerow = gameInfo[4].equalsIgnoreCase("-1") ? String.valueOf(gameInfo[1]) + " vs " + gameInfo[2] + "\n" + gameInfo[7] + "\n" : String.valueOf(gameInfo[7]) + " - " + gameInfo[1] + " " + gameInfo[4] + " - " + gameInfo[5] + " " + gameInfo[2] + "\n" + gameInfo[6] + "\n";
                 gameInfo[8] = FootballpushServlet.getStats(gameInfo, gamesJson);
                 gameInfo[9] = FootballpushServlet.getLineups(gameInfo, gamesJson);
                 gameInfo[10] = gamesJson.get((Object)"Venue") != null ? (String)((JSONObject)gamesJson.get((Object)"Venue")).get((Object)"Name") : null;
@@ -722,7 +722,7 @@ extends HttpServlet {
             float awayTeamPoll = ((Number)pollsJson.get((Object)"Vote2")).floatValue();
             float drawPoll = ((Number)pollsJson.get((Object)"VoteX")).floatValue();
             float total = homeTeamPoll + awayTeamPoll + drawPoll;
-            resp.getWriter().println("Predictions:<br>" + gameInfo[1] + ": " + Math.round(homeTeamPoll / total * 100.0f) + "%<br>" + gameInfo[2] + ": " + Math.round(awayTeamPoll / total * 100.0f) + "%<br>Draw: " + Math.round(drawPoll / total * 100.0f) + "%");
+            resp.getWriter().println("Predictions:\n" + gameInfo[1] + ": " + Math.round(homeTeamPoll / total * 100.0f) + "%\n" + gameInfo[2] + ": " + Math.round(awayTeamPoll / total * 100.0f) + "%\nDraw: " + Math.round(drawPoll / total * 100.0f) + "%");
         }
         catch (Exception pollsJson) {
             // empty catch block
@@ -732,7 +732,7 @@ extends HttpServlet {
     public static String getLineups(String[] gameInfo, JSONObject gamesJson) throws IOException {
         JSONArray lineupArray = (JSONArray)gamesJson.get((Object)"Lineups");
         HashMap<Integer, String> Players = new HashMap<Integer, String>();
-        String lineups = "Starting XI:<br>";
+        String lineups = "Starting XI:\n";
         try {
             if (lineupArray != null) {
                 int i = 1;
@@ -760,7 +760,7 @@ extends HttpServlet {
                     while (j < 12) {
                         lineups = String.valueOf(lineups) + (String)Players.get(j++) + ", ";
                     }
-                    lineups = String.valueOf(lineups) + "<br><br>";
+                    lineups = String.valueOf(lineups) + "\n\n";
                     ++i;
                     playing = "";
                     subs = "";
@@ -785,7 +785,7 @@ extends HttpServlet {
                     Number type = (Number)eventsJson.get((Object)"Type");
                     if (type.intValue() == 0) {
                         if (goals == null) {
-                            goals = "GOALS:<br>";
+                            goals = "GOALS:\n";
                         }
                         int subType = ((Number)eventsJson.get((Object)"SType")).intValue();
                         String goalMode = "";
@@ -800,36 +800,36 @@ extends HttpServlet {
                         Number comp2 = (Number)eventsJson.get((Object)"Comp");
                         String team2 = "";
                         team2 = gameInfo[comp2.intValue()].replace(aggregatedScore, "");
-                        goals = String.valueOf(goals) + time2 + "' - " + player + goalMode + " (" + team2 + ")<br>";
+                        goals = String.valueOf(goals) + time2 + "' - " + player + goalMode + " (" + team2 + ")\n";
                     }
                     if (type.intValue() == 2) {
                         if (red == null) {
-                            red = "RED CARDS:<br>";
+                            red = "RED CARDS:\n";
                         }
                         String player = (String)eventsJson.get((Object)"Player");
                         time = String.valueOf(((Number)eventsJson.get((Object)"GT")).intValue());
                         comp = (Number)eventsJson.get((Object)"Comp");
                         team = "";
                         team = gameInfo[comp.intValue()].replace(aggregatedScore, "");
-                        red = String.valueOf(red) + time + "' - " + player + " (" + team + ")<br>";
+                        red = String.valueOf(red) + time + "' - " + player + " (" + team + ")\n";
                     }
                     if (type.intValue() != 1) continue;
                     if (yel == null) {
-                        yel = "YELLOW CARDS:<br>";
+                        yel = "YELLOW CARDS:\n";
                     }
                     String player = (String)eventsJson.get((Object)"Player");
                     time = String.valueOf(((Number)eventsJson.get((Object)"GT")).intValue());
                     comp = (Number)eventsJson.get((Object)"Comp");
                     team = "";
                     team = gameInfo[comp.intValue()].replace(aggregatedScore, "");
-                    yel = String.valueOf(yel) + time + "' - " + player + " (" + team + ")<br>";
+                    yel = String.valueOf(yel) + time + "' - " + player + " (" + team + ")\n";
                 }
             }
             if (goals != null) {
-                totalEvents = String.valueOf(totalEvents) + "-<br>" + goals;
+                totalEvents = String.valueOf(totalEvents) + "-\n" + goals;
             }
             if (red != null) {
-                totalEvents = String.valueOf(totalEvents) + "-<br>" + red;
+                totalEvents = String.valueOf(totalEvents) + "-\n" + red;
             }
         }
         catch (Exception e) {
@@ -860,7 +860,7 @@ extends HttpServlet {
                     int hours = totalSecs / 3600;
                     int minutes = totalSecs % 3600 / 60;
                     int seconds = totalSecs % 60;
-                    status = " Starts in " + String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + "<br>";
+                    status = " Starts in " + String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + "\n";
                 }
             }
             if (status.equalsIgnoreCase("3")) {
@@ -886,7 +886,7 @@ extends HttpServlet {
     }
 
     private static String getStats(String[] gameInfo, JSONObject gamesJson) {
-        String stats = "STATS:<br>";
+        String stats = "STATS:\n";
         try {
             JSONArray statsArray = (JSONArray)gamesJson.get((Object)"Statistics");
             for (Object stat : statsArray) {
@@ -900,7 +900,7 @@ extends HttpServlet {
                 dictionary.put("10", "Possession(%)");
                 dictionary.put("12", "Fouls");
                 if (dictionary.get(type) == null) continue;
-                stats = String.valueOf(stats) + (String)dictionary.get(type) + ": " + vals.get(0) + " - " + vals.get(1) + "<br>";
+                stats = String.valueOf(stats) + (String)dictionary.get(type) + ": " + vals.get(0) + " - " + vals.get(1) + "\n";
             }
         }
         catch (Exception e) {
