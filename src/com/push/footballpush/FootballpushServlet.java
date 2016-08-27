@@ -146,7 +146,8 @@ extends HttpServlet {
         int sms = 0;
         int matchbwFavTeams = Integer.parseInt(teams[11]);
         if (type.intValue() == 15) {
-            sms = matchbwFavTeams;
+//            sms = matchbwFavTeams;
+        	sms=1;
             String homeScore = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value");
             String awayScore = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
             log.info(String.valueOf(homeScore) + " " + awayScore + teams);
@@ -154,7 +155,8 @@ extends HttpServlet {
             message = String.valueOf(message) + "The Goal has been ruled out.\n\nUpdated Score:\n" + teams[1] + " " + homeScore + " - " + awayScore + " " + teams[2] + "\n\n";
         }
         if (type.intValue() == 10) {
-            sms = matchbwFavTeams;
+//            sms = matchbwFavTeams;
+        	sms=1;
             TeamNum = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value");
             time = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
             player = (String)((JSONObject)paramsArray.get(2)).get((Object)"Value");
@@ -745,15 +747,18 @@ extends HttpServlet {
                     for (Object player : playersArray) {
                         JSONObject playerJson = (JSONObject)player;
                         if (!String.valueOf((Number)playerJson.get((Object)"Status")).equalsIgnoreCase("1")) continue;
-                        if (playerJson.get((Object)"FieldPosition") != null) {
+                        String playerName = (String)playerJson.get((Object)"PlayerName");
+                        String [] nameParts = playerName.split(" ");
+                        playerName = nameParts[nameParts.length - 1];
+						if (playerJson.get((Object)"FieldPosition") != null) {
                             if (String.valueOf((Number)playerJson.get((Object)"FieldPosition")).equalsIgnoreCase("1")) {
-                                Players.put(((Number)playerJson.get((Object)"FieldPosition")).intValue(), String.valueOf((String)playerJson.get((Object)"PlayerName")) + "(GK)");
+                                Players.put(((Number)playerJson.get((Object)"FieldPosition")).intValue(), String.valueOf(playerName) + "(GK)");
                                 continue;
                             }
-                            Players.put(((Number)playerJson.get((Object)"FieldPosition")).intValue(), (String)playerJson.get((Object)"PlayerName"));
+                            Players.put(((Number)playerJson.get((Object)"FieldPosition")).intValue(), playerName);
                             continue;
                         }
-                        Players.put(playerNum++, (String)playerJson.get((Object)"PlayerName"));
+                        Players.put(playerNum++, playerName);
                     }
                     int j = 1;
                     lineups = String.valueOf(lineups) + gameInfo[i] + ": ";
