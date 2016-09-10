@@ -366,7 +366,7 @@ extends HttpServlet {
 
     private void postComment(String message) {
         try {
-            String commentUrl = "http://footballpush.appspot.com/shouts?football=1&name=LiveScores&shout=" + URLEncoder.encode(message, "UTF-8");
+            String commentUrl = "http://footballpush.appspot.com/shouts?football=1&name=LiveScores&shout=11" + URLEncoder.encode(message, "UTF-8");
             FootballpushServlet.readUrl(commentUrl);
         }
         catch (Exception e) {
