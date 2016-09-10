@@ -138,7 +138,7 @@ extends HttpServlet {
 
     private String makeShout(String message, String name) {
         if (message.length() < 10) {
-            return "ERROR: comment must be of more than 10 chars in length<br><br>";
+            return "ERROR1: comment must be of more than 10 chars in length<br><br>";
         }
         String comments = "";
         Date date = new Date();
