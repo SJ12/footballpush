@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -28,9 +30,11 @@ import java.util.Random;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -121,6 +125,7 @@ extends HttpServlet {
             datastore.put(lastEntry);
             JSONArray notsArray = (JSONArray)jsonObject.get((Object)"Notifications");
             log.info("Nots: " + (Object)notsArray + " " + notsArray.size());
+            this.postComment("Nots: " + (Object)notsArray);
             for (Object not : notsArray) {
                 JSONObject notJson = (JSONObject)not;
                 Number type = (Number)notJson.get((Object)"Type");
@@ -159,7 +164,7 @@ extends HttpServlet {
         	sms=1;
             TeamNum = (String)((JSONObject)paramsArray.get(0)).get((Object)"Value");
             time = (String)((JSONObject)paramsArray.get(1)).get((Object)"Value");
-            player = (String)((JSONObject)paramsArray.get(2)).get((Object)"Value");
+            player = (String)((JSONObject)paramsArray.get(2)).get((Object)"Value")+ " "+(String)((JSONObject)paramsArray.get(5)).get((Object)"Value")+ " ";
             String homeScore = (String)((JSONObject)paramsArray.get(3)).get((Object)"Value");
             String awayScore = (String)((JSONObject)paramsArray.get(4)).get((Object)"Value");
             log.info(String.valueOf(TeamNum) + " " + time + " " + player + " " + homeScore + " " + awayScore + teams);
@@ -300,7 +305,7 @@ extends HttpServlet {
         String team = teams[Integer.parseInt(TeamNum)];
         int homescore = Integer.parseInt(homeScore);
         int awayscore = Integer.parseInt(awayScore);
-        String message = "GOAL!\n";
+        String message = player+"GOAL!\n";
         int diff = 0;
         diff = TeamNum.equalsIgnoreCase("1") ? homescore - awayscore : awayscore - homescore;
         if (diff == 0) {
@@ -366,7 +371,7 @@ extends HttpServlet {
 
     private void postComment(String message) {
         try {
-            String commentUrl = "http://footballpush.appspot.com/shouts?football=1&name=LiveScores&shout=11" + URLEncoder.encode(message, "UTF-8");
+            String commentUrl = "http://footballpush.appspot.com/shouts?football=1&name=LiveScores&shout=" + URLEncoder.encode(message, "UTF-8");
             FootballpushServlet.readUrl(commentUrl);
         }
         catch (Exception e) {
@@ -375,7 +380,7 @@ extends HttpServlet {
         }
     }
 
-    private void sendMessage(String message) {
+    private static void sendMessage(String message) {
         try {
             log.info("inside sendMessage........");
 
@@ -631,7 +636,7 @@ extends HttpServlet {
                 FootballpushServlet.competitions[compNum++] = compInfo;
             }
             for (Object game : gamesArray) {
-                String[] gameInfo = new String[12];
+                String[] gameInfo = new String[13];
                 JSONObject gamesJson = (JSONObject)game;
                 Number gameID = (Number)gamesJson.get((Object)"ID");
                 Number compID = (Number)gamesJson.get((Object)"Comp");
@@ -641,6 +646,7 @@ extends HttpServlet {
                 JSONArray compsArray = (JSONArray)gamesJson.get((Object)"Comps");
                 JSONArray scores = (JSONArray)gamesJson.get((Object)"Scrs");
                 JSONArray eventsArray = (JSONArray)gamesJson.get((Object)"Events");
+                
                 JSONArray aggScore = null;
                 if (gamesJson.get((Object)"AggregatedScore") != null) {
                     aggScore = (JSONArray)gamesJson.get((Object)"AggregatedScore");
@@ -679,6 +685,7 @@ extends HttpServlet {
                 gameInfo[9] = FootballpushServlet.getLineups(gameInfo, gamesJson);
                 gameInfo[10] = gamesJson.get((Object)"Venue") != null ? (String)((JSONObject)gamesJson.get((Object)"Venue")).get((Object)"Name") : null;
                 activeGames[gameNum++] = gameInfo;
+                getVideos(gamesJson, gameID, gameInfo[1] + " " + gameInfo[4] + " - " + gameInfo[5] + " " + gameInfo[2]);
             }
         }
         catch (Exception e) {
@@ -687,6 +694,46 @@ extends HttpServlet {
         }
         return activeGames;
     }
+
+	private static void getVideos(JSONObject gamesJson, Number gameID, String scorerow) {
+		if (gamesJson.get((Object)"Videos") != null) {
+		    JSONArray videosArray = (JSONArray) gamesJson.get((Object)"Videos");
+		    
+//		    JSONObject videoJson = (JSONObject) videosArray.get(2);
+//			String latestVideo = (String) videoJson.get((Object)"URL");
+		    
+		    String videoFromCache = new DbOperations().getCache(gameID.toString()+"_video");
+		    String latestVideo = null, Caption=null, message = null;;
+		    for (Object vid : videosArray) {
+                JSONObject videoJson = (JSONObject)vid;
+                Caption = (String)videoJson.get((Object)"Caption");
+                latestVideo = (String) videoJson.get((Object)"URL");
+                if(Caption.equalsIgnoreCase("highlights"))
+                {  
+                	message = scorerow;
+                	break;
+                }  
+                else{
+                	message = "["+(String) videoJson.get((Object)"Score")+"] "+(String) videoJson.get((Object)"Comp");
+                }               
+            }
+		    		    		    
+		    if(!latestVideo.equalsIgnoreCase(videoFromCache))
+		    {
+		    	message+="\n\n"+latestVideo;
+//		    	sendMessage(message);
+		    	String commentUrl = null;
+				try {
+					commentUrl = "http://footballpush.appspot.com/shouts?football=1&name=LiveScores&shout=" + URLEncoder.encode(message, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            FootballpushServlet.readUrl(commentUrl);
+		    	new DbOperations().setCache(gameID.toString()+"_video", latestVideo);
+		    }
+		}
+	}
 
     public static String getAggScore(String[] gameInfo, JSONArray aggScore) {
         String aggregatedScore = "";

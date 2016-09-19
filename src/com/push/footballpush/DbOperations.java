@@ -102,6 +102,19 @@ extends HttpServlet {
             datastore.delete(new Key[]{key});
         }
     }
+    
+    public void setCache(String key, String value)
+    {
+    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+    	syncCache.put((Object)key, (Object)value);
+    }
+    
+    public String getCache(String key)
+    {
+    	MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+    	String value = syncCache.get((Object)key) != null ? (String)syncCache.get((Object)key) : null;
+    	return value;
+    }
 
     private void insertSignupLink(HttpServletResponse resp) throws IOException {
         String sub_link = String.format("<form action='http://footballpush.appspot.com/shouts%s' method='get' class='txtweb-form'>", this.sub_link_add);
@@ -138,7 +151,7 @@ extends HttpServlet {
 
     private String makeShout(String message, String name) {
         if (message.length() < 10) {
-            return "ERROR1: comment must be of more than 10 chars in length<br><br>";
+            return "ERROR: comment must be of more than 10 chars in length<br><br>";
         }
         String comments = "";
         Date date = new Date();
