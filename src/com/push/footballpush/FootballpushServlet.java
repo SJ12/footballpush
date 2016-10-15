@@ -46,7 +46,7 @@ extends HttpServlet {
     private static String[][] games;
     private static String[][] competitions;
     private static final Logger log;
-    public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=5694,595&competitors=2375,2379,5061,5050,2372,5054,2377,2378,5028,114,480,5491,105,106,108,104,110,131,132,134,331,341&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
+    public String gamesUri = "http://ws.365scores.com/Data/Games/?lang=10&uc=80&competitions=6172,5694,595&competitors=2373,5054,2375,2379,5061,5050,2372,5054,2377,2378,5028,114,480,5491,105,106,108,104,110,131,132,134,331,341&startdate=%s&enddate=%s&FullCurrTime=true&uid=%s";
     public String matchUri = "http://ws.365scores.com/Data/Games/GameCenter/?games=%s";
     public String resultsurl = "";
     public static int[] favTeams;
@@ -662,6 +662,8 @@ extends HttpServlet {
                     if (!gameInfo[11].equalsIgnoreCase("1") || Arrays.binarySearch(favTeams, teamID) >= 0) continue;
                     gameInfo[11] = "0";
                 }
+                if(compID.toString() == "6172")
+                	gameInfo[11] = "1";
                 gameInfo[3] = FootballpushServlet.getCompetitionfromID(compID).toUpperCase();
                 int penHomeScore = ((Number)scores.get(8)).intValue();
                 int penAwayScore = ((Number)scores.get(9)).intValue();
@@ -682,7 +684,8 @@ extends HttpServlet {
                 String scorerow = null;
                 scorerow = gameInfo[4].equalsIgnoreCase("-1") ? String.valueOf(gameInfo[1]) + " vs " + gameInfo[2] + "\n" + gameInfo[7] + "\n" : String.valueOf(gameInfo[7]) + " - " + gameInfo[1] + " " + gameInfo[4] + " - " + gameInfo[5] + " " + gameInfo[2] + "\n" + gameInfo[6] + "\n";
                 gameInfo[8] = FootballpushServlet.getStats(gameInfo, gamesJson);
-                gameInfo[9] = FootballpushServlet.getLineups(gameInfo, gamesJson);
+//                gameInfo[9] = FootballpushServlet.getLineups(gameInfo, gamesJson);
+                gameInfo[9] = "";
                 gameInfo[10] = gamesJson.get((Object)"Venue") != null ? (String)((JSONObject)gamesJson.get((Object)"Venue")).get((Object)"Name") : null;
                 activeGames[gameNum++] = gameInfo;
                 getVideos(gamesJson, gameID, gameInfo[1] + " " + gameInfo[4] + " - " + gameInfo[5] + " " + gameInfo[2]);
